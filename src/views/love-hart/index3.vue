@@ -2,16 +2,14 @@
 import {Box, Rect, App} from 'leafer-ui'
 import {nextTick} from "vue";
 
-let box = new Box({
-  x: 0,
-  y: 0,
-  width: innerWidth,
-  height: innerHeight
-})
+const width = window.innerWidth;
+const height = window.innerHeight - 60;
+
+const box = new Box({x: 0, y: 0, width, height})
 
 /**
- * r=1−sin(θ)
- * @param size
+ * x = 16sin^3(t)
+ * y = 13cos(t) − 5cos(2t) − 2cos(3t) − cos(4t)
  * @param boxSize
  */
 const drawDynamicHeart = (boxSize = 5) => {
@@ -42,7 +40,7 @@ const drawDynamicHeart = (boxSize = 5) => {
 }
 
 nextTick(() => {
-  const app = new App({view: 'graph'})
+  const app = new App({view: 'graph', width, height})
   app.tree = app.addLeafer()
   drawDynamicHeart(23)
   app.tree.add(box)
