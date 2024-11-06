@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {Box, Rect, App} from 'leafer-ui'
 import {nextTick} from "vue";
+import {calculateDimensions, IPoint} from "../../utils";
 
 const width = window.innerWidth;
 const height = window.innerHeight - 60;
@@ -14,9 +15,9 @@ const box = new Box({x: 0, y: 0, width, height})
  * @param count 花瓣的数量
  *    - 当 count 为奇数时会有 count 个花瓣，为偶数时会有 2count 个花瓣
  * @param boxSize 每个小矩形的尺寸
- * @param points 点的数量
  */
 const draw = (size: number, count: number, boxSize: number) => {
+  const points: IPoint[] = []
   for (let i = -500 / 2; i < 500 / 2; i++) {
     for (let j = -500 / 2; j < 500 / 2; j++) {
       // 计算网格点的笛卡尔坐标
@@ -32,16 +33,21 @@ const draw = (size: number, count: number, boxSize: number) => {
 
       // 判断点是否在玫瑰线的内部区域
       if (r <= Math.abs(roseRadius)) {
-        box.add(Rect.one({
-          x: x,
-          y: y,
-          width: boxSize - 1,
-          height: boxSize - 1,
-          fill: 'pink',
-        }));
+        points.push({x,y})
       }
     }
   }
+
+  const {width, height} = calculateDimensions(points)
+  points.forEach(({x, y}) => {
+    box.add(Rect.one({
+      x: x + width / 2,
+      y: y + height / 2,
+      width: boxSize - 1,
+      height: boxSize - 1,
+      fill: 'pink',
+    }));
+  })
 };
 
 nextTick(() => {
